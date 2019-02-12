@@ -1,0 +1,56 @@
+{
+	"info": {
+		"_postman_id": "8c0b9a17-9de8-420f-a301-b0704c1aa7f4",
+		"name": "PO-API-AKS",
+		"description": "Client requests for the PO API deployed on AKS (k8s-springboot-data-rest)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get-All",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{IP_ADDR}}/orders",
+					"protocol": "http",
+					"host": [
+						"{{IP_ADDR}}"
+					],
+					"path": [
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get-ById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{IP_ADDR}}/orders/1",
+					"protocol": "http",
+					"host": [
+						"{{IP_ADDR}}"
+					],
+					"path": [
+						"orders",
+						"1"
+					]
+				},
+				"description": "Get a PO by ID."
+			},
+			"response": []
+		}
+	]
+}
