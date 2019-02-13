@@ -2,9 +2,9 @@
   "name": "mdm_restapi.newpostman",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "export NODE_ENV=dev && nodemon server.js"
+    "start": "export NODE_ENV=dev && nodemon index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,6 @@
     "@azure/storage-blob": "^10.3.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "grunt": "^1.0.3",
     "newman": "^4.3.1",
     "newman-reporter-html": "^1.0.2"
   }

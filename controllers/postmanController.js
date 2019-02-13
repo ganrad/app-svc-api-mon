@@ -4,8 +4,17 @@ var newman = require('newman');
 
 var AzureStorageHandler = require('./../handlers/azStorageHandler.js');
 
-var errCount = [{ collection: "Collection Name:Environment Name", ecount: "Failure count",
-	retries: "Retries attempted", timestamp: "Time (ms) when first failure occurred" }];
+// errCount is an array which keeps the postman collections in cache
+// This is the 'header' record
+var errCount = 
+	[
+	  { collection: "Collection Name:Environment Name", 
+	    ecount: "Failure count",
+	    retries: "Retries attempted",
+	    timestamp: "Time (ms) when first failure occurred"
+	  }
+	];
+
 var retryCount = process.env.API_RETRY_COUNT || 5; // Minimum number of failure attempts
 var failureInterval = (process.env.API_FAILURE_INTERVAL || 15) * 60 * 1000; // Failure interval in milli-seconds
 
@@ -13,6 +22,7 @@ exports.run = async function(req, res) {
 
    var col = './postman/' + req.query.col;
    var env = './postman/' + req.query.env;
+
    await newman.run({
      collection: col,
      reporters: ['cli'],
@@ -20,11 +30,12 @@ exports.run = async function(req, res) {
      insecure: true,
      timeoutRequest: 5000, // wait 5 seconds for API call to finish or else timeout
      environment: env
-     }).on('start', function (err, args) { // on start of run, log to console
+   }).on('start', function (err, args) { // on start of run, log to console
      	console.log('running a collection...');
-     }).on('exception', function (err, args) { // on start of run, log to console
-    	console.log('ddddd...');
-     }).on('done', function (err, summary) {
+   }).on('exception', function (err, args) { // on start of run, log to console
+   	console.log('ddddd...');
+   }).on('done', function (err, summary) {
+
 	var pcol = req.query.col;
 	pcol = pcol.substring(0,pcol.indexOf(".postman"));
 	var pcolenv = req.query.env;
