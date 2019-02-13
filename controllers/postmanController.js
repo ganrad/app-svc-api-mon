@@ -1,6 +1,7 @@
 'use strict';
 
 var newman = require('newman');
+const fs = require('fs');
 
 var AzureStorageHandler = require('./../handlers/azStorageHandler.js');
 
@@ -23,11 +24,24 @@ exports.run = async function(req, res) {
    var col = './postman/' + req.query.col;
    var env = './postman/' + req.query.env;
 
+   // Check if the collection file exists
+   if ( ! fs.existsSync(col) ) {
+	// No collection to execute, return 200 OK with message
+	let respobj = {
+	   error: "Query parameter 'col' (Postman Collection) missing in request",
+	   message: "In the request, include a query parameter (col) to specify the Postman collection to execute" 
+	};
+ 	res.status(400).json(JSON.stringify(respobj)); // Return http status code 400, bad request
+	return;
+   }
+
    await newman.run({
      collection: col,
      reporters: ['cli'],
-     bail : ['folder','failure'],
+     bail: ['folder','failure'],
      insecure: true,
+     timeout: 60000, // time for the entire collection run to complete
+     color: 'on',
      timeoutRequest: 5000, // wait 5 seconds for API call to finish or else timeout
      environment: env
    }).on('start', function (err, args) { // on start of run, log to console
@@ -74,7 +88,8 @@ exports.run = async function(req, res) {
 		   var errPayload = {
 		     "error": err,
 		     "retry-attempts": element.retries,
-		     "failure": summary.error,
+		     "summary-error": summary.error,
+		     "run": summary.run, // contains failures, stats, executions
 		     "collection": pcol,
 		     "environment": pcolenv,
 		     "api": "Unavailable",
