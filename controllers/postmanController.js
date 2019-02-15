@@ -12,7 +12,8 @@ var errCount =
 	  { collection: "Collection Name:Environment Name", 
 	    ecount: "Failure count",
 	    retries: "Retries attempted",
-	    timestamp: "Time (ms) when first failure occurred"
+	    timestamp: "Time (ms) when first failure occurred",
+	    alert: "Alert generated (yes/no)"
 	  }
 	];
 
@@ -75,7 +76,13 @@ exports.run = async function(req, res) {
 
 	if ( ! found ) {
 	   var ctime = new Date();
-	   element = {collection: colenv, ecount: 1 , retries: 1, timestamp: ctime.getTime()};
+	   element = {
+		collection: colenv,
+		ecount: 1,
+		retries: 1,
+		timestamp: ctime.getTime(),
+		alert: "no"
+	   };
 	   errCount[errCount.length] = element;
 	   errIdx = errCount.length;
 	};
@@ -85,7 +92,8 @@ exports.run = async function(req, res) {
 	   element.ecount = 0; // reset the api error count to zero!
 
 	   var ctime = new Date().getTime();
-	   if ( (ctime - element.timestamp) > failureInterval ) {
+	   if ( ((ctime - element.timestamp) > failureInterval) &&
+		(element.alert == "no") ) {
 		   // Store the error json object as a blob in Azure Storage
 		   var errPayload = {
 		     "error": err,
@@ -99,7 +107,7 @@ exports.run = async function(req, res) {
 		   };
 		   console.log("Failure Object:");
 		   console.log(errPayload);
-		   element.retries = 0;
+		   // element.retries = 0;
 
 		   var azStorHandler = new AzureStorageHandler();
 		   var time = new Date();
@@ -108,8 +116,7 @@ exports.run = async function(req, res) {
 		   var blobFileName = pcol + "-" + pcolenv + "_" + timeSuffix;
 		   azStorHandler.uploadException(blobFileName,errPayload).then(() => console.log("Done")).catch((e) => console.log(e));
 
-		   // element.timestamp = new Date().getTime();
-		   errCount.splice(errIdx,1);
+		   element.alert = "yes";
 	   };
 	};
 	//res.send(err);
