@@ -5,7 +5,7 @@ const fs = require('fs');
 
 var AzureStorageHandler = require('./../handlers/azStorageHandler.js');
 
-// errCount is an array which keeps the postman collections in cache
+// errCount is an array that keeps the postman collection run exception data in cache
 // This is the 'header' record
 var errCount = 
 	[
