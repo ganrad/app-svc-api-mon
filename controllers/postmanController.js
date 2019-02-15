@@ -59,7 +59,8 @@ exports.run = async function(req, res) {
 	var ecArrLength = errCount.length;
 	var found = false;
 	var element = null;
-	for (var errIdx=0; errIdx < ecArrLength; errIdx++) {
+        var errIdx = 0;
+	for (; errIdx < ecArrLength; errIdx++) {
 		element = errCount[errIdx];
 		if ( element.collection == colenv ) {
 			element.ecount++;
@@ -76,6 +77,7 @@ exports.run = async function(req, res) {
 	   var ctime = new Date();
 	   element = {collection: colenv, ecount: 1 , retries: 1, timestamp: ctime.getTime()};
 	   errCount[errCount.length] = element;
+	   errIdx = errCount.length;
 	};
 	console.log("Failure Count Array:");
    	console.log(errCount);
@@ -106,7 +108,8 @@ exports.run = async function(req, res) {
 		   var blobFileName = pcol + "-" + pcolenv + "_" + timeSuffix;
 		   azStorHandler.uploadException(blobFileName,errPayload).then(() => console.log("Done")).catch((e) => console.log(e));
 
-		   element.timestamp = new Date().getTime();
+		   // element.timestamp = new Date().getTime();
+		   errCount.splice(errIdx,1);
 	   };
 	};
 	//res.send(err);
